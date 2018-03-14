@@ -1,0 +1,6 @@
+http://imdb.com/title/tt0081505/?ref_=chttp_tt_58|The Shining|1980|USA|1980-05-23|Horror|146 min|8.4|Stanley Kubrick|Jack Nicholson,Shelley Duvall,Danny Lloyd
+http://imdb.com/title/tt0034583/?ref_=chttp_tt_32|Casablanca|1942|USA|1943-01-23|Drama,Romance,War|102 min|8.6|Michael Curtiz|Humphrey Bogart,Ingrid Bergman,Paul Henreid
+http://imdb.com/title/tt0042876/?ref_=chttp_tt_99|Rashomon|1950|Japan|1951-12-26|Crime,Drama|88 min|8.3|Akira Kurosawa|Toshirô Mifune,Machiko Kyô,Masayuki Mori
+http://imdb.com/title/tt0405159/?ref_=chttp_tt_185|Million Dollar Baby|2004|USA|2005-01-28|Drama,Sport|132 min|8.1|Clint Eastwood|Hilary Swank,Clint Eastwood,Morgan Freeman
+http://imdb.com/title/tt0053125/?ref_=chttp_tt_67|North by Northwest|1959|USA|1959-09-26|Adventure,Mystery,Thriller,Comedy|136 min|8.4|Alfred Hitchcock|Cary Grant,Eva Marie Saint,James Mason
+http://imdb.com/title/tt0064116/?ref_=chttp_tt_28|Once Upon a Time in the West|1968|Italy|1968-12-21|Western|175 min|8.6|Sergio Leone|Henry Fonda,Charles Bronson,Claudia Cardinale
