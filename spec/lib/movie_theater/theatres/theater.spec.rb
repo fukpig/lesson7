@@ -1,22 +1,14 @@
-require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 require 'rspec/its'
 require 'timecop'
 
-require_relative '../../theatres/theater.rb'
+require_relative '../../../../lib/movie_theater/theatres/theater.rb'
 I18n.config.available_locales = :en
 
 
-describe MovieTheater::Theater do
-  let(:file) { File.join(File.dirname(__FILE__), "../spec_movies.txt") }
-  let(:theater) { MovieTheater::Theater.new(file) }
-
-
-  describe '#add_to_cash' do
-    it 'get 5 dollars in cashbox' do
-      theater.add_to_cash(5)
-      expect(theater.cash).to eq "$5.00"
-    end
-  end
+describe MovieTheater::Theatres::Theater do
+  let(:file) { File.join(File.dirname(__FILE__), "../../../spec_movies.txt") }
+  let(:theater) { MovieTheater::Theatres::Theater.new(file) }
 
   describe '#buy_ticket' do
     it 'find horror movie and buy ticket' do
@@ -32,10 +24,10 @@ describe MovieTheater::Theater do
       expect(theater.cash).to eq "$5.00"
     end
     it 'get error when movie cant be find in text file' do
-      expect{theater.buy_ticket("La la land")}.to raise_error(MovieTheater::BaseTheater::MovieNotFound)
+      expect{theater.buy_ticket("La la land")}.to raise_error(MovieTheater::Theatres::Base::MovieNotFound)
     end
     it 'get error when movie not in schedule' do
-      expect{theater.buy_ticket("Scream")}.to raise_error(MovieTheater::BaseTheater::MovieNotFound)
+      expect{theater.buy_ticket("Scream")}.to raise_error(MovieTheater::Theatres::Base::MovieNotFound)
     end
   end
 
@@ -44,10 +36,10 @@ describe MovieTheater::Theater do
       expect(theater.when?("The Shining")).to eq :evening
     end
     it 'get error when movie cant be find in text file' do
-      expect{theater.when?("La la land")}.to raise_error(MovieTheater::BaseTheater::MovieNotFound)
+      expect{theater.when?("La la land")}.to raise_error(MovieTheater::Theatres::Base::MovieNotFound)
     end
     it 'get error when movie not in schedule' do
-      expect{theater.when?("Scream")}.to raise_error(MovieTheater::BaseTheater::MovieNotFound)
+      expect{theater.when?("Scream")}.to raise_error(MovieTheater::Theatres::Base::MovieNotFound)
     end
   end
 
@@ -129,7 +121,7 @@ describe MovieTheater::Theater do
 
     context "get error with invalid time" do
       it "return invalid time period" do
-        expect{theater.show("07:00")}.to raise_error(MovieTheater::Theater::InvalidTimePeriod)
+        expect{theater.show("07:00")}.to raise_error(MovieTheater::Theatres::Theater::InvalidTimePeriod)
       end
     end
   end

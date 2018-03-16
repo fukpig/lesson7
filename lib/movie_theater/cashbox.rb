@@ -12,17 +12,24 @@ module MovieTheater
       end
     end
 
-    #attr_accessor :cash
+    @cash = Money.new(0, "USD")
 
     def put_in_cash(amount)
       raise InvalidAmount if amount.cents <= 0
-      self.add_to_cash(amount.cents)
+      #if remove checking for nil => undefined method `+' for nil:NilClass or set @cash in netflix class
+      @cash = Money.new(0, "USD") if @cash.nil?
+      @cash += amount
     end
 
-    def take(who)
+    def get_money_in_cashbox
+      @cash.format
+    end
+
+    def take_money_from_cashbox(who)
       raise InvalidTaker unless who == "Bank"
-      clean_cash
+      @cash = Money.new(0, "USD")
       puts "Encashment complete"
     end
+
   end
 end

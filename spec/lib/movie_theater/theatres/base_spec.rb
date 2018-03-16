@@ -1,13 +1,13 @@
-require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 require 'rspec/its'
 require 'timecop'
 
+require_relative '../../../../lib/movie_theater/theatres/base.rb'
 
-require_relative '../../theatres/base_theatre.rb'
 
-describe MovieTheater::BaseTheater do
-  let(:file) { File.join(File.dirname(__FILE__), "../spec_movies.txt") }
-  let(:theater) { MovieTheater::BaseTheater.new(file) }
+describe MovieTheater::Theatres::Base do
+  let(:file) { File.join(File.dirname(__FILE__), "../../../spec_movies.txt") }
+  let(:theater) { MovieTheater::Theatres::Base.new(file) }
 
   describe '#filter' do
     subject { theater.filter(filter_hash) }
@@ -35,10 +35,10 @@ describe MovieTheater::BaseTheater do
     subject { theater }
 
     it 'check valid classes' do
-      expect(theater.movies[0]).to be_a MovieTheater::ModernMovie
-      expect(theater.movies[1]).to be_a MovieTheater::AncientMovie
-      expect(theater.movies[2]).to be_a MovieTheater::ClassicMovie
-      expect(theater.movies[3]).to be_a MovieTheater::NewMovie
+      expect(theater.movies[0]).to be_a MovieTheater::Movies::Modern
+      expect(theater.movies[1]).to be_a MovieTheater::Movies::Ancient
+      expect(theater.movies[2]).to be_a MovieTheater::Movies::Classic
+      expect(theater.movies[3]).to be_a MovieTheater::Movies::New
     end
   end
 end

@@ -1,11 +1,11 @@
-require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 require 'rspec/its'
 
-require_relative '../../movies/new_movie.rb'
+require_relative '../../../../lib/movie_theater/movies/new.rb'
 
-describe MovieTheater::NewMovie do
+describe MovieTheater::Movies::New do
   let(:arguments) { {:href => "http://url.com/", :title => "Mad Max: Fury Road", :release_year => "2015", :country => "USA", :release_date => "2015-10-09", :genre => "Action, Adventure, Sci-Fi", :full_duration_definition => "103 min", :rating => 8.1, :director => "George Miller", :actors => "Tom Hardy, Charlize Theron"} }
-  let(:movie) { MovieTheater::NewMovie.new(arguments, nil) }
+  let(:movie) { MovieTheater::Movies::New.new(arguments, nil) }
 
   describe 'valid new movie' do
     subject { movie }

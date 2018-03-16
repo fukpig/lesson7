@@ -1,11 +1,11 @@
-require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 require 'rspec/its'
 
-require_relative '../../movies/ancient_movie.rb'
+require_relative '../../../../lib/movie_theater/movies/ancient.rb'
 
-describe MovieTheater::AncientMovie do
+describe MovieTheater::Movies::Ancient do
   let(:arguments) { {:href => "http://url.com/", :title => "Citizen Kane", :release_year => "1941", :country => "USA", :release_date => "1941-10-09", :genre => "Drama, Mystery", :full_duration_definition => "103 min", :rating => 8.3, :director => "Orson Welles", :actors => "Herman J. Mankiewicz"} }
-  let(:movie) { MovieTheater::AncientMovie.new(arguments, nil) }
+  let(:movie) { MovieTheater::Movies::Ancient.new(arguments, nil) }
 
   describe 'valid ancient movie' do
     subject { movie }
