@@ -17,24 +17,21 @@ describe MovieTheater::Cashbox do
   end
 
   describe '#put_in_cash' do
+    subject(:pay) { mock_theater.pay(Money.new(1000, "USD")) }
+
     it 'puts 10 dollars in cashbox' do
-      mock_theater.put_in_cash(Money.new(1000, "USD"))
-      expect(mock_theater.get_money_in_cashbox).to eq "$10.00"
+      expect{ pay } .to change{mock_theater.cash.cents}.by(1000)
     end
   end
 
   describe '#take' do
+    subject(:take) { mock_theater.take("Bank") }
     it 'take cash by bank get money' do
-      mock_theater.take_money_from_cashbox("Bank")
-      expect(mock_theater.get_money_in_cashbox).to eq "$0.00"
+      expect{ take } .to change{mock_theater.cash.cents}.by(0) and output("Encashment complete\n").to_stdout
     end
 
     it 'take cash by noname raise error' do
-      expect{mock_theater.take_money_from_cashbox("Noname")}.to raise_error(MovieTheater::Cashbox::InvalidTaker)
-    end
-
-    it 'take cash by bank get output' do
-      expect{mock_theater.take_money_from_cashbox("Bank")}.to output("Encashment complete\n").to_stdout
+      expect{mock_theater.take("Noname")}.to raise_error(MovieTheater::Cashbox::InvalidTaker)
     end
   end
 

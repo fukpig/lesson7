@@ -39,16 +39,8 @@ module MovieTheater
         movie = find_movie_by_time(time_period)
         raise MovieNotFound.new(time: time) if movie.nil?
         amount = Money.new(COST_PERIODS[time_period]*100, "USD")
-        put_in_cash(amount)
+        pay(amount)
         super(movie)
-      end
-
-      def cash
-        get_money_in_cashbox
-      end
-
-      def take(who)
-        take_money_from_cashbox(who)
       end
 
       private

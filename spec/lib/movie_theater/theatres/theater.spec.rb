@@ -107,28 +107,31 @@ describe MovieTheater::Theatres::Theater do
 
     context "check payment for morning" do
       let (:movie) { double("ClassicMovie", :duration => 100, :title => "The thing") }
-        it 'returns $3.00' do
+      subject(:show) { theater.show(10) }
+        it 'returns 300 cents' do
           allow(theater).to receive(:filter).and_return([movie])
-          theater.show(10)
-          expect(theater.cash).to eq "$3.00"
+          show
+          expect(theater.cash.cents).to eq 300
         end
     end
 
     context "check payment for day" do
       let (:movie) { double("ModernMovie", :duration => 110, :title => "Indiana Jones", :genre => ["Adventure"]) }
+      subject(:show) { theater.show(15) }
         it 'returns $5.00' do
           allow(theater).to receive(:filter).and_return([movie])
-          theater.show(15)
-          expect(theater.cash).to eq "$5.00"
+          show
+          expect(theater.cash.cents).to eq 500
         end
     end
 
     context "check payment for evening" do
       let (:movie) { double("ModernMovie", :duration => 110, :title => "Alien", :genre => ["Horror"]) }
+      subject(:show) { theater.show(21) }
         it 'returns $10.00' do
           allow(theater).to receive(:filter).and_return([movie])
-          theater.show(21)
-          expect(theater.cash).to eq "$10.00"
+          show
+          expect(theater.cash.cents).to eq 1000
         end
     end
 

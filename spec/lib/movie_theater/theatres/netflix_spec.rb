@@ -11,12 +11,15 @@ describe MovieTheater::Theatres::Netflix do
   let(:file) { File.join(File.dirname(__FILE__), "../../../spec_movies.txt") }
   let(:netflix) { MovieTheater::Theatres::Netflix.new(file) }
 
+  before { MovieTheater::Theatres::Netflix.cash }
+
+  #before { let(:netflix) { MovieTheater::Theatres::Netflix.new(file) } }
+
   describe '#pay' do
     subject(:pay) { netflix.pay(5) }
 
-    it 'get 10 dollars in cashbox after payment' do
-      netflix.pay(10)
-      expect(MovieTheater::Theatres::Netflix.cash).to eq "$10.00"
+    it 'get 5 dollars in cashbox after payment' do
+      expect { pay } .to change{MovieTheater::Theatres::Netflix.cash.cents}.by(500)
     end
 
     context 'get 5 dollars in wallet after payment' do
@@ -24,18 +27,11 @@ describe MovieTheater::Theatres::Netflix do
     end
   end
 
-  describe '#cash' do
-    it 'get 30(?) dollars in cashbox after payment' do
-      netflix.pay(15)
-      expect(MovieTheater::Theatres::Netflix.cash).to eq "$30.00"
-    end
-  end
-
   describe '#withdraw' do
     subject(:withdraw) { netflix.withdraw(5) }
     context 'when enough money' do
       before { netflix.pay(5) }
-      it { expect { withdraw } .to change(netflix, :wallet).by(Money.new(-500, "USD")) }
+      it { expect { withdraw } .to change{netflix.wallet.cents}.by(-500) }
     end
     context 'when not enough money' do
       it { expect { withdraw } .to raise_error(MovieTheater::Theatres::Netflix::WithdrawError) }
@@ -74,7 +70,7 @@ describe MovieTheater::Theatres::Netflix do
 
         it 'expect to withdraw payment for movie' do
           allow(netflix).to receive(:movies).and_return([movie])
-          expect {netflix.show()} .to change(netflix, :wallet).from(Money.new(500, "USD")).to(Money.new(350, "USD"))
+          expect {netflix.show()} .to change{netflix.wallet.cents}.from(500).to(350)
         end
       end
 
@@ -92,7 +88,7 @@ describe MovieTheater::Theatres::Netflix do
 
         it 'expect to withdraw payment for movie' do
           allow(netflix).to receive(:movies).and_return([movie])
-          expect {netflix.show()} .to change(netflix, :wallet).from(Money.new(500, "USD")).to(Money.new(350, "USD"))
+          expect {netflix.show()} .to change{netflix.wallet.cents}.from(500).to(350)
         end
       end
 

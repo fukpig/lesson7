@@ -40,7 +40,7 @@ module MovieTheater
         raise PaymentError unless amount > 0
         amount = Money.new(amount*100, "USD")
         @wallet += amount
-        self.class.put_in_cash(amount)
+        self.class.pay(amount)
       end
 
       def how_much?(title)
@@ -53,14 +53,6 @@ module MovieTheater
         movie = filter_hash.nil? ? movies.sample : get_filtered_film(filter_hash)
         withdraw(movie.cost)
         super(movie)
-      end
-
-      def self.cash()
-        Theatres::Netflix.get_money_in_cashbox
-      end
-
-      def take(who)
-        Theatres::Netflix.take_money_from_cashbox(who)
       end
 
       private

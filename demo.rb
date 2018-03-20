@@ -21,7 +21,7 @@ puts netflix2.pay(30)
 
 puts MovieTheater::Theatres::Netflix.cash
 
-netflix.take('Bank')
+MovieTheater::Theatres::Netflix.take('Bank')
 puts MovieTheater::Theatres::Netflix.cash
 
 #puts MovieTheater::Netflix.cash
