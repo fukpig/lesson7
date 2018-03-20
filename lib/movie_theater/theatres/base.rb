@@ -11,8 +11,6 @@ module MovieTheater
     require_relative '../cashbox.rb'
 
     class Base
-      include Cashbox
-
       class FileNotFound < ArgumentError
         attr_reader :filename
         def initialize(filename)
@@ -46,10 +44,6 @@ module MovieTheater
 
       def movies
         @collection.movies
-      end
-
-      def cash
-        get_money_in_cashbox
       end
 
       def filter(filters)

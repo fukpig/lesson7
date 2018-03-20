@@ -6,7 +6,7 @@ require_relative '../../../../lib/movie_theater/movies/classic.rb'
 
 describe MovieTheater::Movies::Classic do
   let(:arguments) { {:href => "http://url.com/", :title => "Vertigo", :release_year => "1958", :country => "USA", :release_date => "1958-10-09", :genre => "Mystery, Thriller", :full_duration_definition => "103 min", :rating => 8.3, :director => "Alfred Hitchcock", :actors => "James Stewart"} }
-  let(:theater) { MovieTheater::Theatres::BaseTheater.new(File.join(File.dirname(__FILE__), "../../../spec_movies.txt")) }
+  let(:theater) { MovieTheater::Theatres::Base.new(File.join(File.dirname(__FILE__), "../../../spec_movies.txt")) }
   let(:movie) { MovieTheater::Movies::Classic.new(arguments, theater.collection) }
 
   describe 'valid classic movie' do

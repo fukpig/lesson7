@@ -34,20 +34,17 @@ module MovieTheater
 
       def show(time = Time.now.hour)
         hour = time.is_a?(Integer) ? time : guess_hour(time)
-
         time_period = get_time_period(hour)
         raise InvalidTimePeriod if time_period.nil?
         movie = find_movie_by_time(time_period)
         raise MovieNotFound.new(time: time) if movie.nil?
+        amount = Money.new(COST_PERIODS[time_period]*100, "USD")
+        put_in_cash(amount)
         super(movie)
       end
 
-      def buy_ticket(title)
-        movie = filter(title: title).first
-        raise MovieNotFound.new(title: title) if movie.nil?
-        time_period = find_time_by_movie(movie) or raise MovieNotFound.new(title: title)
-        amount = Money.new(COST_PERIODS[time_period]*100, "USD")
-        put_in_cash(amount)
+      def cash
+        get_money_in_cashbox
       end
 
       def take(who)

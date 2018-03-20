@@ -2,18 +2,11 @@ require './lib/movie_theater.rb'
 
 I18n.config.available_locales = :en
 
-
-puts MovieTheater::Theatres::Netflix.instance_variables
-puts "instance"
-
 theater = MovieTheater::Theatres::Theater.new("movies.txt")
 theater2 = MovieTheater::Theatres::Theater.new("movies.txt")
 
-
-theater.buy_ticket('Psycho')
-theater2.buy_ticket('City Lights')
-
-
+theater.show('10:00')
+theater2.show('16:00')
 
 theater.take('Bank')
 puts theater.cash

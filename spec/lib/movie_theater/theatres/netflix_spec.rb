@@ -25,7 +25,7 @@ describe MovieTheater::Theatres::Netflix do
   end
 
   describe '#cash' do
-    it 'get 25 dollars in cashbox after payment' do
+    it 'get 30(?) dollars in cashbox after payment' do
       netflix.pay(15)
       expect(MovieTheater::Theatres::Netflix.cash).to eq "$30.00"
     end

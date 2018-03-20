@@ -7,7 +7,6 @@ module MovieTheater
 
     class Netflix < Theatres::Base
       extend Cashbox
-      #@cash = 0
 
       class PaymentError < StandardError
         def initialize()
@@ -41,7 +40,7 @@ module MovieTheater
         raise PaymentError unless amount > 0
         amount = Money.new(amount*100, "USD")
         @wallet += amount
-        Netflix.put_in_cash(amount)
+        self.class.put_in_cash(amount)
       end
 
       def how_much?(title)
