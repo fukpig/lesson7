@@ -28,7 +28,7 @@ describe MovieTheater::Cashbox do
     subject(:take) { mock_theater.take("Bank") }
     before { mock_theater.pay(Money.new(1000, "USD")) }
     it 'take cash by bank get money' do
-      expect{ take } .to change{mock_theater.cash.cents}.from(1000).to(0) and output("Encashment complete\n").to_stdout
+      expect{ take } .to change{mock_theater.cash.cents}.from(1000).to(0).and(output("Encashment complete\n").to_stdout)
     end
 
     it 'take cash by noname raise error' do
