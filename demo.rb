@@ -26,22 +26,3 @@ puts MovieTheater::Theatres::Netflix.cash
 
 #puts MovieTheater::Netflix.cash
 #puts MovieTheater::Netflix.cash
-
-=begin
-puts netflix.how_much?('The Terminator')
-
-puts netflix.show(genre: 'Horror', period: :modern)
-puts netflix.show()
-puts netflix.wallet
-
-puts "========"
-theater = Theater.new("movies.txt")
-
-puts theater.when?('City Lights')
-puts theater.when?('Psycho')
-puts theater.when?('Back to the Future')
-
-
-puts theater.show("10:30")
-puts theater.show("13:00")
-=end

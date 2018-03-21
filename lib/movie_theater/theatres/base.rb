@@ -35,7 +35,6 @@ module MovieTheater
         raise FileNotFound.new(filename) unless File.file? filename
         @movies = CSV.read(filename, { headers: MOVIE_HASH_KEYS, col_sep: "|" }).map { |row| create_movie(row.to_hash, self) }
         @collection = MovieTheater::MoviesCollection::BaseCollection.new(@movies)
-        @cash = 0
       end
 
       def inspect

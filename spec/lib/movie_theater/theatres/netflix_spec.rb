@@ -11,9 +11,7 @@ describe MovieTheater::Theatres::Netflix do
   let(:file) { File.join(File.dirname(__FILE__), "../../../spec_movies.txt") }
   let(:netflix) { MovieTheater::Theatres::Netflix.new(file) }
 
-  before { MovieTheater::Theatres::Netflix.cash }
-
-  #before { let(:netflix) { MovieTheater::Theatres::Netflix.new(file) } }
+  before { MovieTheater::Theatres::Netflix.clean() }
 
   describe '#pay' do
     subject(:pay) { netflix.pay(5) }

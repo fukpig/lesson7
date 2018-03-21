@@ -14,14 +14,15 @@ module MovieTheater
 
     def pay(amount)
       raise InvalidAmount if amount.cents <= 0
-      #if remove checking for nil => undefined method `+' for nil:NilClass or set @cash in netflix class
-      @cash = Money.new(0, "USD") if @cash.nil?
-      @cash += amount
+      @cash = cash + amount
     end
 
     def cash
-      @cash = Money.new(0, "USD") if @cash.nil?
-      @cash
+      @cash ||= Money.new(0, "USD")
+    end
+
+    def clean
+      @cash = Money.new(0, "USD")
     end
 
     def take(who)
