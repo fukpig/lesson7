@@ -12,17 +12,24 @@ module MovieTheater
       end
     end
 
-    #attr_accessor :cash
-
-    def put_in_cash(amount)
+    def pay(amount)
       raise InvalidAmount if amount.cents <= 0
-      self.add_to_cash(amount.cents)
+      @cash = cash + amount
+    end
+
+    def cash
+      @cash ||= Money.new(0, "USD")
+    end
+
+    def clean
+      @cash = Money.new(0, "USD")
     end
 
     def take(who)
       raise InvalidTaker unless who == "Bank"
-      clean_cash
+      @cash = Money.new(0, "USD")
       puts "Encashment complete"
     end
+
   end
 end

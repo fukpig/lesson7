@@ -1,43 +1,28 @@
-require './movie_theater/module.rb'
+require './lib/movie_theater.rb'
 
 I18n.config.available_locales = :en
 
-netflix = MovieTheater::Netflix.new("movies.txt")
-netflix2 = MovieTheater::Netflix.new("movies.txt")
-puts netflix.pay(20)
-puts netflix2.pay(30)
+theater = MovieTheater::Theatres::Theater.new("movies.txt")
+theater2 = MovieTheater::Theatres::Theater.new("movies.txt")
 
-#netflix.take('Bank')
-puts netflix.cash
-puts netflix2.cash
+theater.show('10:00')
+theater2.show('16:00')
 
-
-theater = MovieTheater::Theater.new("movies.txt")
-theater2 = MovieTheater::Theater.new("movies.txt")
-
-
-theater.buy_ticket('Psycho')
-theater2.buy_ticket('City Lights')
-
-#theater.take('Bank')
+theater.take('Bank')
 puts theater.cash
 puts theater2.cash
 
-=begin
-puts netflix.how_much?('The Terminator')
+netflix = MovieTheater::Theatres::Netflix.new("movies.txt")
+netflix2 = MovieTheater::Theatres::Netflix.new("movies.txt")
+netflix3 = MovieTheater::Theatres::Netflix.new("movies.txt")
 
-puts netflix.show(genre: 'Horror', period: :modern)
-puts netflix.show()
-puts netflix.wallet
+puts netflix.pay(20)
+puts netflix2.pay(30)
 
-puts "========"
-theater = Theater.new("movies.txt")
+puts MovieTheater::Theatres::Netflix.cash
 
-puts theater.when?('City Lights')
-puts theater.when?('Psycho')
-puts theater.when?('Back to the Future')
+MovieTheater::Theatres::Netflix.take('Bank')
+puts MovieTheater::Theatres::Netflix.cash
 
-
-puts theater.show("10:30")
-puts theater.show("13:00")
-=end
+#puts MovieTheater::Netflix.cash
+#puts MovieTheater::Netflix.cash

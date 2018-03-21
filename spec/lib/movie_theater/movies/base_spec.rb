@@ -1,11 +1,12 @@
-require_relative '../spec_helper'
+require_relative '../../../spec_helper'
 require 'rspec/its'
 
-require_relative '../../movies/base_movie.rb'
+require_relative '../../../../lib/movie_theater/movies/base.rb'
 
-describe MovieTheater::BaseMovie do
+
+describe MovieTheater::Movies::Base do
   let(:arguments) { {:href => "url", :title => "The thing", :release_year => "1983", :country => "USA", :release_date => "1983-01-01", :genre => "Horror", :full_duration_definition => "103 min", :rating => 8, :director => 'Carpenter', :actors => "Kurt Russell"} }
-  let(:movie) { MovieTheater::BaseMovie.new(arguments, nil) }
+  let(:movie) { MovieTheater::Movies::Base.new(arguments, nil) }
 
   describe 'valid new object' do
     subject { movie }
@@ -22,11 +23,11 @@ describe MovieTheater::BaseMovie do
     }
 
     it 'return error on get cost' do
-      expect{movie.cost}.to raise_error(MovieTheater::BaseMovie::ConstantError)
+      expect{movie.cost}.to raise_error(MovieTheater::Movies::Base::ConstantError)
     end
 
     it 'return error on get period' do
-      expect{movie.period}.to raise_error(MovieTheater::BaseMovie::ConstantError)
+      expect{movie.period}.to raise_error(MovieTheater::Movies::Base::ConstantError)
     end
   end
 
