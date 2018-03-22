@@ -1,6 +1,6 @@
+# define online theater with general cashbox
 module MovieTheater
   module Theatres
-    # define class  Netflix
     require 'csv'
     require_relative 'base.rb'
     require_relative '../cashbox.rb'
@@ -9,21 +9,21 @@ module MovieTheater
       extend Cashbox
 
       class PaymentError < StandardError
-        def initialize()
-          super("Payment Error")
+        def initialize
+          super('Payment Error')
         end
       end
 
       class WithdrawError < StandardError
-        def initialize()
-          super("Withdraw Error")
+        def initialize
+          super('Withdraw Error')
         end
       end
 
       attr_reader :wallet
       def initialize(filename)
         super(filename)
-        @wallet = Money.new(0, "USD")
+        @wallet = Money.new(0, 'USD')
       end
 
       def check_money(amount)
@@ -31,20 +31,20 @@ module MovieTheater
       end
 
       def withdraw(amount)
-        amount = Money.new(amount*100, "USD")
+        amount = Money.new(amount * 100, 'USD')
         check_money(amount)
         @wallet -= amount
       end
 
       def pay(amount)
         raise PaymentError unless amount > 0
-        amount = Money.new(amount*100, "USD")
+        amount = Money.new(amount * 100, 'USD')
         @wallet += amount
         self.class.pay(amount)
       end
 
       def how_much?(title)
-        movie = filter({:title => title}).first
+        movie = filter(title: title).first
         raise MovieNotFound.new(title: title) if movie.nil?
         movie.cost
       end
@@ -60,7 +60,7 @@ module MovieTheater
       def get_filtered_film(filter_hash)
         filtered_movies = filter(filter_hash)
         movie = filtered_movies.sample
-        raise MovieNotFound.new(filter_hash) if movie.nil?
+        raise MovieNotFound, filter_hash if movie.nil?
         movie
       end
     end

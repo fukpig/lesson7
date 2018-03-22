@@ -1,6 +1,6 @@
+# define classic movie with release date between 1945..1967
 module MovieTheater
   module Movies
-  # define class  AncientMovie
     require_relative 'base.rb'
     class Classic < Base
       COST = 1.5
@@ -11,9 +11,10 @@ module MovieTheater
       end
 
       private
+
       def director_films
-        count = @movie_collection.movies.select{ |m| m.director == director && m.title != title }.count
-        count > 0 ? "(still in the top #{count} of his films)" : ""
+        count = @movie_collection.movies.select { |m| m.director == director && m.title != title }.count
+        count > 0 ? "(still in the top #{count} of his films)" : ''
       end
     end
   end
