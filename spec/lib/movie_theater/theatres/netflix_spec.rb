@@ -53,52 +53,70 @@ describe MovieTheater::Theatres::Netflix do
     end
   end
 
+=begin
+  describe '#define_filter' do
+    it 'add basic filter' do
+      expect(netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') }).to eq 3
+    end
+
+    it 'add advanced filter' do
+      expect(netflix.how_much?("The Shining")).to eq 3
+    end
+
+    it 'add advanced filter with parent filter' do
+      expect(netflix.how_much?("The Shining")).to eq 3
+    end
+
+    it 'add advanced filter with not found parent filter' do
+      expect(netflix.how_much?("The Shining")).to eq 3
+    end
+  end
+=end
+
   describe '#show' do
     context 'check show' do
       before { netflix.pay(5) }
+      before { netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') } }
+      before { netflix.define_filter(:the_thing_with_year) {  |movie, year| movie.title.include?('The thing') && movie.release_year == year } }
+      before { netflix.define_filter(:another_the_thing_with_year, from: :the_thing_with_year, arg: 1983) }
+
       before { Timecop.freeze(Time.local(2018, 3, 12, 13, 0, 0)) }
-      let (:movie) { double("ClassicMovie", :cost => 1.5, :duration => 100, :title => "The thing") }
+      let (:movie) { double("ClassicMovie", :cost => 1.5, :duration => 100, :title => "The thing", :release_year => 1983) }
 
 
-      context 'check without filter' do
-        it 'check show film' do
+      context 'check show' do
+        it 'check basic filter' do
           allow(netflix).to receive(:movies).and_return([movie])
-          expect{netflix.show()}.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
+          expect{ netflix.show{ |movie| movie.title.include?('The thing') } }.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
+        end
+
+        it 'check advanced with defined basic filter' do
+          allow(netflix).to receive(:movies).and_return([movie])
+          expect{ netflix.show(the_thing: true) }.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
+        end
+
+        it 'check advanced with defined advanced filter' do
+          allow(netflix).to receive(:movies).and_return([movie])
+          expect{ netflix.show(the_thing_with_year: 1983) }.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
+        end
+
+        it 'check advanced with defined advanced filter with parent filter' do
+          allow(netflix).to receive(:movies).and_return([movie])
+          expect{ netflix.show(another_the_thing_with_year: true) }.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
         end
 
         it 'expect to withdraw payment for movie' do
           allow(netflix).to receive(:movies).and_return([movie])
-          expect {netflix.show()} .to change{netflix.wallet.cents}.from(500).to(350)
+          expect {netflix.show{ |movie| movie.title.include?('The thing') }} .to change{netflix.wallet.cents}.from(500).to(350)
         end
-      end
-
-      context 'check with filter' do
-        it 'return horror genre filter' do
-          allow(netflix).to receive(:filter).and_return([movie])
-          netflix.show(genre: 'Horror')
-          expect(netflix).to have_received(:filter).with({:genre=>"Horror"})
-        end
-
-        it 'check show film' do
-          allow(netflix).to receive(:filter).and_return([movie])
-          expect{netflix.show(genre: 'Horror')}.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
-        end
-
-        it 'expect to withdraw payment for movie' do
-          allow(netflix).to receive(:movies).and_return([movie])
-          expect {netflix.show()} .to change{netflix.wallet.cents}.from(500).to(350)
-        end
-      end
-
-      it 'fails when movie with filter not found' do
-        allow(netflix).to receive(:filter).and_return([])
-        expect{netflix.show(genre: 'Comedy')}.to raise_error(MovieTheater::Theatres::Base::MovieNotFound)
       end
     end
 
     context 'no money on wallet' do
+      let (:movie) { double("ClassicMovie", :cost => 1.5, :duration => 100, :title => "The thing") }
       it 'get error' do
-        expect{netflix.show()}.to raise_error(MovieTheater::Theatres::Netflix::WithdrawError)
+        allow(netflix).to receive(:movies).and_return([movie])
+        expect{netflix.show{ |movie| movie.title.include?('thing') }  }.to raise_error(MovieTheater::Theatres::Netflix::WithdrawError)
       end
     end
   end

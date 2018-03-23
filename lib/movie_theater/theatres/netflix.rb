@@ -20,10 +20,19 @@ module MovieTheater
         end
       end
 
-      attr_reader :wallet
+      class FilterNotFound < ArgumentError
+        attr_reader :filename
+        def initialize(filter_name)
+          @filter_name = filter_name
+          super("Filter #{filter_name} not found")
+        end
+      end
+
+      attr_reader :wallet, :client_filters
       def initialize(filename)
         super(filename)
         @wallet = Money.new(0, 'USD')
+        @client_filters = {}
       end
 
       def check_money(amount)
@@ -49,8 +58,32 @@ module MovieTheater
         movie.cost
       end
 
-      def show(filter_hash = nil)
-        movie = filter_hash.nil? ? movies.sample : get_filtered_film(filter_hash)
+      def define_filter(filter_name, from: nil, arg: nil, &block)
+        unless from.nil?
+          filter = @client_filters[from]
+          raise FilterNotFound, from if filter.nil?
+        end
+        filter = { from: from, arg: arg, filter_proc: block }
+        @client_filters[filter_name] = filter
+      end
+
+      def show(filter = nil)
+        if !filter.nil? && !block_given?
+          filter_name = filter.keys[0]
+          filter_value = filter.values[0]
+
+          filter = @client_filters[filter_name]
+          raise FilterNotFound, filter_name if filter.nil?
+
+          filter_proc = filter[:from].nil? ? filter[:filter_proc] : @client_filters[filter[:from]][:filter_proc]
+          filter_proc_value = filter[:arg].nil? ? filter_value : filter[:arg]
+
+          movie = movies.select { |m| filter_proc.call(m, filter_proc_value) }.sample
+        end
+
+        movie = movies.select { |m| yield(m) }.sample if filter.nil? && block_given?
+
+        raise MovieNotFound, filter if movie.nil?
         withdraw(movie.cost)
         super(movie)
       end

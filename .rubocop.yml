@@ -1,0 +1,8 @@
+Style/Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 130
+Style/CaseEquality:
+  Enabled: false
+Style/AndOr:
+  Enabled: false
