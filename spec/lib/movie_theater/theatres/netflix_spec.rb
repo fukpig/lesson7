@@ -53,33 +53,15 @@ describe MovieTheater::Theatres::Netflix do
     end
   end
 
-=begin
-  describe '#define_filter' do
-    it 'add basic filter' do
-      expect(netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') }).to eq 3
-    end
-
-    it 'add advanced filter' do
-      expect(netflix.how_much?("The Shining")).to eq 3
-    end
-
-    it 'add advanced filter with parent filter' do
-      expect(netflix.how_much?("The Shining")).to eq 3
-    end
-
-    it 'add advanced filter with not found parent filter' do
-      expect(netflix.how_much?("The Shining")).to eq 3
-    end
-  end
-=end
-
+  
   describe '#show' do
     context 'check show' do
-      before { netflix.pay(5) }
-      before { netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') } }
-      before { netflix.define_filter(:the_thing_with_year) {  |movie, year| movie.title.include?('The thing') && movie.release_year == year } }
-      before { netflix.define_filter(:another_the_thing_with_year, from: :the_thing_with_year, arg: 1983) }
-
+      before do
+        netflix.pay(5)
+        netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') }
+        netflix.define_filter(:the_thing_with_year) {  |movie, year| movie.title.include?('The thing') && movie.release_year == year }
+        netflix.define_filter(:another_the_thing_with_year, from: :the_thing_with_year, arg: 1983)
+      end
       before { Timecop.freeze(Time.local(2018, 3, 12, 13, 0, 0)) }
       let (:movie) { double("ClassicMovie", :cost => 1.5, :duration => 100, :title => "The thing", :release_year => 1983) }
 

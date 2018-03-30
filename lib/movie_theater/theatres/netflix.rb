@@ -60,35 +60,54 @@ module MovieTheater
 
       def define_filter(filter_name, from: nil, arg: nil, &block)
         unless from.nil?
-          filter = @client_filters[from]
-          raise FilterNotFound, from if filter.nil?
+          filter_parent = @client_filters.fetch(from) { |key| raise FilterNotFound, key }
+          block = proc { |m| filter_parent.call(m, arg) }
         end
-        filter = { from: from, arg: arg, filter_proc: block }
-        @client_filters[filter_name] = filter
+        @client_filters[filter_name] = block
       end
 
-      def show(filter = nil)
-        if !filter.nil? && !block_given?
-          filter_name = filter.keys[0]
-          filter_value = filter.values[0]
-
-          filter = @client_filters[filter_name]
-          raise FilterNotFound, filter_name if filter.nil?
-
-          filter_proc = filter[:from].nil? ? filter[:filter_proc] : @client_filters[filter[:from]][:filter_proc]
-          filter_proc_value = filter[:arg].nil? ? filter_value : filter[:arg]
-
-          movie = movies.select { |m| filter_proc.call(m, filter_proc_value) }.sample
-        end
-
-        movie = movies.select { |m| yield(m) }.sample if filter.nil? && block_given?
-
-        raise MovieNotFound, filter if movie.nil?
+      # filtered_movies = filter(filters.fetch(:built_in)).select{|m| apply_custom_filters(m, filters.fetch(:custom)) }
+      def show(filter_hash = nil)
+        filters = devide_filters(filter_hash)
+        filtered_movies = movies
+        filtered_movies = filter_built_in(filtered_movies, filters.fetch(:built_in)) unless filters.fetch(:built_in).empty?
+        filtered_movies = filtered_movies.select { |m| apply_custom_filters(m, filters.fetch(:custom)) } unless filters.fetch(:custom).empty?
+        filtered_movies = filtered_movies.select { |m| yield(m) } if block_given?
+        movie = filtered_movies.sample
+        raise MovieNotFound, filter_hash if movie.nil?
         withdraw(movie.cost)
         super(movie)
       end
 
       private
+
+      def filter_built_in(movies, filters)
+        filters.reduce(movies) { |filtered, (key, value)| filtered.select { |m| m.matches?(key, value) } }
+      end
+
+      def built_in_filter?(parameter_name)
+        MOVIE_HASH_KEYS.include? parameter_name
+      end
+
+      def apply_custom_filters(movie, filters)
+        result = false
+        filters.each do |f|
+          filter_name = f.keys[0]
+          filter_value = f.values[0]
+
+          filter = @client_filters[filter_name]
+          raise FilterNotFound, filter_name if filter.nil?
+
+          result = filter.call(movie, filter_value)
+        end
+        result
+      end
+
+      def devide_filters(filter_hash)
+        filters = { built_in: {}, custom: [] }
+        filter_hash.map { |k, v| built_in_filter?(k) ? filters[:built_in][k] = v : filters[:custom].push(k => v) } unless filter_hash.nil?
+        filters
+      end
 
       def get_filtered_film(filter_hash)
         filtered_movies = filter(filter_hash)

@@ -40,9 +40,11 @@ module MovieTheater
         "#<Movie \"#{@title}\" (#{@release_year})>"
       end
 
+      # rubocop:disable CaseEquality
       def matches?(key, value)
         Array(send(key)).any? { |v| value === v }
       end
+      # rubocop:enable CaseEquality
 
       def matches_all?(filter)
         filter.any? { |k, v| matches?(k, v) }
