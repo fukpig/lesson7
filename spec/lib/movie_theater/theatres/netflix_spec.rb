@@ -53,7 +53,7 @@ describe MovieTheater::Theatres::Netflix do
     end
   end
 
-  
+
   describe '#show' do
     context 'check show' do
       before do
@@ -61,8 +61,8 @@ describe MovieTheater::Theatres::Netflix do
         netflix.define_filter(:the_thing) {  |movie| movie.title.include?('The thing') }
         netflix.define_filter(:the_thing_with_year) {  |movie, year| movie.title.include?('The thing') && movie.release_year == year }
         netflix.define_filter(:another_the_thing_with_year, from: :the_thing_with_year, arg: 1983)
+        Timecop.freeze(Time.local(2018, 3, 12, 13, 0, 0))
       end
-      before { Timecop.freeze(Time.local(2018, 3, 12, 13, 0, 0)) }
       let (:movie) { double("ClassicMovie", :cost => 1.5, :duration => 100, :title => "The thing", :release_year => 1983) }
 
 
@@ -86,7 +86,7 @@ describe MovieTheater::Theatres::Netflix do
           allow(netflix).to receive(:movies).and_return([movie])
           expect{ netflix.show(another_the_thing_with_year: true) }.to output("Now showing: The thing 13:00 - 14:40\n").to_stdout
         end
-
+        
         it 'expect to withdraw payment for movie' do
           allow(netflix).to receive(:movies).and_return([movie])
           expect {netflix.show{ |movie| movie.title.include?('The thing') }} .to change{netflix.wallet.cents}.from(500).to(350)

@@ -1,8 +1,6 @@
 Style/Documentation:
   Enabled: false
 Metrics/LineLength:
-  Max: 130
-Style/CaseEquality:
-  Enabled: false
+  Max: 145
 Style/AndOr:
-  Enabled: false
+  EnforcedStyle: conditionals

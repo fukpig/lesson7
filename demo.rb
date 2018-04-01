@@ -14,6 +14,5 @@ netflix.define_filter(:terminator2_by_year, from: :terminator2, arg: 1991)
 puts netflix.show(genre: 'Drama', release_year: 2001..2005)
 puts netflix.show(terminators: true)
 puts netflix.show(terminator2: 1991)
-puts netflix.show(terminator2_by_year: true)
 puts netflix.show{ |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.release_year > 2003}
 puts netflix.show(genre: 'Action', terminator2: 1991) { |movie| !movie.title.include?('Batman') }
