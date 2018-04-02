@@ -1,6 +1,6 @@
 Style/Documentation:
   Enabled: false
 Metrics/LineLength:
-  Max: 145
+  Max: 160
 Style/AndOr:
   EnforcedStyle: conditionals

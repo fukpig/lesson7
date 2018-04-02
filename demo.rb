@@ -16,3 +16,4 @@ puts netflix.show(terminators: true)
 puts netflix.show(terminator2: 1991)
 puts netflix.show{ |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.release_year > 2003}
 puts netflix.show(genre: 'Action', terminator2: 1991) { |movie| !movie.title.include?('Batman') }
+puts netflix.show()

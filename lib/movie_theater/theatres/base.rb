@@ -47,7 +47,7 @@ module MovieTheater
       end
 
       def filter(filters)
-        filters.reduce(@collection.movies) { |filtered, (key, value)| filtered.select { |m| m.matches?(key, value) } }
+        filters.reduce(movies) { |filtered, (key, value)| filtered.select { |m| m.matches?(key, value) } }
       end
 
       def show(movie)

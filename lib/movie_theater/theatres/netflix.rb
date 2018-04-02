@@ -66,8 +66,8 @@ module MovieTheater
         @client_filters[filter_name] = block
       end
 
-      def show(filters = nil, &block)
-        movie = prepare_movies(block, filters).sample
+      def show(**filters, &block)
+        movie = prepare_movies(filters, block).sample
         raise MovieNotFound, filters if movie.nil?
         withdraw(movie.cost)
         super(movie)
@@ -75,31 +75,15 @@ module MovieTheater
 
       private
 
-      def prepare_movies(block, filters = nil)
-        if !filters.nil?
-          builtin_filters, custom_filters = filters.partition { |key, _| MovieTheater::Movies::Base.instance_methods.include?(key) }.map(&:to_h)
-          filtered_movies = filter(builtin_filters)
-                            .yield_self { |res| filter_custom(res, custom_filters) }
-                            .yield_self { |res| block ? res.select(&block) : res }
-        else
-          # rubocop:disable IfInsideElse
-          filtered_movies = movies.select(&block) if block
-          # rubocop:enable IfInsideElse
-        end
-        filtered_movies
+      def prepare_movies(filters, block)
+        builtin_filters, custom_filters = filters.partition { |key, _| MovieTheater::Movies::Base.instance_methods.include?(key) }.map(&:to_h)
+        filter(builtin_filters)
+          .yield_self { |res| filter_custom(res, custom_filters) }
+          .yield_self { |res| block ? res.select(&block) : res }
       end
 
       def filter_custom(result, filters)
-        filtered_movies = result
-        filters.each do |f|
-          filter_name = f.fetch(0)
-          filter_value = f.fetch(1)
-
-          filter = @client_filters[filter_name]
-          raise FilterNotFound, filter_name if filter.nil?
-          filtered_movies = filtered_movies.select { |m| filter.call(m, filter_value) }
-        end
-        filtered_movies
+        filters.reduce(result) { |filtered, (filter_name, filter_value)| filtered.select { |m| client_filters.fetch(filter_name).call(m, filter_value) } }
       end
     end
   end
