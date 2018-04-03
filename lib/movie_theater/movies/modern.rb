@@ -1,6 +1,6 @@
+# define modern movie with release date between 1968..1999
 module MovieTheater
   module Movies
-    # define class  AncientMovie
     require_relative 'base.rb'
     class Modern < Base
       COST = 3
@@ -10,5 +10,5 @@ module MovieTheater
         "#{title} — modern movie: plays #{actors.join(',')}"
       end
     end
-  end  
+  end
 end

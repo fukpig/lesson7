@@ -1,14 +1,14 @@
 module MovieTheater
   module Cashbox
     class InvalidAmount < StandardError
-      def initialize()
-        super("Invalid amount, please enter valid amount")
+      def initialize
+        super('Invalid amount, please enter valid amount')
       end
     end
 
     class InvalidTaker < StandardError
-      def initialize()
-        super("Police on way")
+      def initialize
+        super('Police on way')
       end
     end
 
@@ -18,18 +18,17 @@ module MovieTheater
     end
 
     def cash
-      @cash ||= Money.new(0, "USD")
+      @cash ||= Money.new(0, 'USD')
     end
 
     def clean
-      @cash = Money.new(0, "USD")
+      @cash = Money.new(0, 'USD')
     end
 
     def take(who)
-      raise InvalidTaker unless who == "Bank"
-      @cash = Money.new(0, "USD")
-      puts "Encashment complete"
+      raise InvalidTaker unless who == 'Bank'
+      @cash = Money.new(0, 'USD')
+      puts 'Encashment complete'
     end
-
   end
 end

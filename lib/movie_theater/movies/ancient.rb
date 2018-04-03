@@ -1,6 +1,6 @@
+# define ancient movie with release date between 1900..1944
 module MovieTheater
   module Movies
-    # define class  AncientMovie
     require_relative 'base.rb'
     class Ancient < Base
       COST = 1
