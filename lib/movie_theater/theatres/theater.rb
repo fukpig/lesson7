@@ -1,16 +1,22 @@
 # define usual theater with own cashbox
+require 'csv'
+require 'time'
+require_relative 'base.rb'
+require_relative '../cashbox.rb'
+
 module MovieTheater
   module Theatres
-    require 'csv'
-    require_relative 'base.rb'
-    require_relative '../cashbox.rb'
-
     class Theater < Theatres::Base
       include Cashbox
-
       class InvalidTimePeriod < StandardError
         def initialize
           super('In that period we doesnt show movies, sorry')
+        end
+      end
+
+      class ConclusionPeriods < StandardError
+        def initialize
+          super('Conclusion of periods')
         end
       end
 
@@ -20,50 +26,141 @@ module MovieTheater
         end
       end
 
-      TIME_PERIODS = { 9..11 => :morning, 12..18 => :day, 19..23 => :evening }.freeze
-      COST_PERIODS = { morning: 3, day: 5, evening: 10 }.freeze
-      DAY_GENRES = %w[Comedy Adventure].freeze
-      EVENING_GENRES = %w[Horror Drama].freeze
-      SCHEDULE = { morning: { period: :ancient },
-                   day: { genre: Regexp.union(DAY_GENRES) },
-                   evening: { genre: Regexp.union(EVENING_GENRES) } }.freeze
-      def when?(title)
-        movie = filter(title: title).first
-        raise MovieNotFound.new(title: title) if movie.nil?
-        find_time_by_movie(movie) or raise MovieNotFound.new(title: title)
+      class Hall
+        attr_accessor :title, :color, :places
+
+        def initialize(args)
+          args.map { |k, v| instance_variable_set("@#{k}", v) unless v.nil? }
+        end
+=begin
+        def method_missing(attribute_name, *value)
+          if !value.empty?
+            define_singleton_method("#{attribute_name}".to_sym) { value }
+          end
+        end
+=end
       end
 
-      def show(time = Time.now.hour)
-        hour = time.is_a?(Integer) ? time : guess_hour(time)
-        time_period = guess_period(hour)
-        raise InvalidTimePeriod if time_period.nil?
-        movie = find_movie_by_time(time_period)
-        raise MovieNotFound.new(time: time) if movie.nil?
-        amount = Money.new(COST_PERIODS[time_period] * 100, 'USD')
-        pay(amount)
-        super(movie)
+      class Period
+        attr_accessor :time
+
+        def initialize(time, &block)
+          @time = time
+          instance_eval &block
+          convert_stringtime_to_time
+        end
+
+        def method_missing(attribute_name, *value)
+          if !value.empty?
+            define_singleton_method("#{attribute_name}".to_sym) { value.count == 1 && attribute_name != :hall ? value[0] : value }
+          end
+        end
+
+        private
+
+        def convert_stringtime_to_time
+          time = @time.to_a
+          @time = [Time.parse(time[0]),Time.parse(time[-1])]
+        end
+
       end
 
-      private
+      FILE_URL = "movies.txt"
 
-      def guess_hour(time)
-        m = time.match(/^([01]?\d):([0-5]\d)$/) or raise 'Wrong time format'
-        m[1].to_i
+      attr_accessor :halls
+
+      def initialize(&block)
+        super(FILE_URL)
+        @halls = []
+        @periods = []
+        @schedule = {}
+        instance_eval &block
+        generate_schedule
       end
 
-      def guess_period(hour)
-        movie_period = TIME_PERIODS.detect { |period, _value| period.cover?(hour) }
-        raise InvalidTimePeriod if movie_period.nil?
-        movie_period.last
+      def get_hall(color)
+        @halls.each do |hall|
+          if hall.color == color
+            return hall
+          end
+        end
       end
 
-      def find_time_by_movie(movie)
-        SCHEDULE.detect { |_key, filters| movie.matches_all?(filters) }.first
+      def generate_schedule
+        @periods.each do |period|
+          movie = get_movie(period)
+          puts movie
+          if !@schedule.key? movie.title
+            @schedule[movie.title] = []
+          end
+
+#          puts period.hall
+=begin
+          @schedule[movie.title].push({
+            :description => period.description,
+            :time => period.time[0],
+            :title => movie.title,
+            :hall => get_hall(period.hall
+            :places =>
+          })
+=end
+
+        end
       end
 
-      def find_movie_by_time(time)
-        filter(SCHEDULE[time]).sample
+      def show_schedule
+        puts "Today in cinema:"
+        @schedule.each do |key, movie|
+          @schedule[key].each do |period|
+            puts "Title:" + period[:title] + " Time:" + period[:time].to_s + " Price:" + period[:price] + " Places:" + period[:place]
+          end
+        end
       end
+
+      def get_movie(period)
+        filters = prepare_filters(period)
+        return filter(filters).sample
+      end
+
+      def prepare_filters(period)
+        filters = {}
+        if period.filters.is_a?(Hash)
+          filters = period.filters
+        end
+
+        title = period.title
+        if !title.nil?
+          filters[:title] = title
+        end
+
+        filters
+      end
+
+      def hall(color, options)
+        hall = Hall.new({:color => color, :title => options[:title], :places => options[:places]})
+        @halls.push(hall)
+      end
+
+      def period(time, &block)
+        period = Period.new(time, &block)
+        raise ConclusionPeriods if !is_period_valid?(@periods, period)
+        @periods.push(period)
+      end
+
+      def is_period_valid?(periods, new_period)
+        new_period_time = new_period.get_parsed_time
+        new_period.hall.each do |new_hall|
+          periods.each do |period|
+              period.hall.each do |hall|
+                if new_hall == hall && new_period.time[0] >= period.time[0] && new_period.time[1] <= period.time[1]
+                  return false
+                end
+              end
+          end
+        end
+        return true
+      end
+
     end
   end
 end

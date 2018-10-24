@@ -6,7 +6,7 @@ require_relative '../../../../lib/movie_theater/movies/base.rb'
 
 describe MovieTheater::Movies::Base do
   let(:arguments) { {:href => "url", :title => "The thing", :release_year => "1983", :country => "USA", :release_date => "1983-01-01", :genre => "Horror", :full_duration_definition => "103 min", :rating => 8, :director => 'Carpenter', :actors => "Kurt Russell"} }
-  let(:movie) { MovieTheater::Movies::Base.new(arguments, nil) }
+  let(:movie) { MovieTheater::Movies::Base.new(arguments) }
 
   describe 'valid new object' do
     subject { movie }

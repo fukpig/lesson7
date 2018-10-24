@@ -6,6 +6,8 @@ module MovieTheater
       COST = 1.5
       PERIOD = :classic
 
+      attribute :movie_collection, Object
+
       def poster_title
         "#{title} — classic movie, director #{director} #{director_films}"
       end

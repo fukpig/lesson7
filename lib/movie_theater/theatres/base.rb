@@ -11,6 +11,7 @@ module MovieTheater
     require_relative '../cashbox.rb'
 
     class Base
+
       class FileNotFound < ArgumentError
         attr_reader :filename
         def initialize(filename)
@@ -61,15 +62,17 @@ module MovieTheater
       def create_movie(movie_hash, theater)
         case movie_hash[:release_year].to_i
         when 1900..1944
-          MovieTheater::Movies::Ancient.new(movie_hash, theater)
+          MovieTheater::Movies::Ancient.new(movie_hash)
         when 1945..1967
-          MovieTheater::Movies::Classic.new(movie_hash, theater)
+          movie_hash[:movie_collection] = theater
+          MovieTheater::Movies::Classic.new(movie_hash)
         when 1968..1999
-          MovieTheater::Movies::Modern.new(movie_hash, theater)
+          MovieTheater::Movies::Modern.new(movie_hash)
         else
-          MovieTheater::Movies::New.new(movie_hash, theater)
+          MovieTheater::Movies::New.new(movie_hash)
         end
       end
+
     end
   end
 end

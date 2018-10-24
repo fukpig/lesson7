@@ -4,6 +4,8 @@ module MovieTheater
     require 'csv'
     require_relative 'base.rb'
     require_relative '../cashbox.rb'
+    require_relative './finders/genre.rb'
+    require_relative './finders/country.rb'
 
     class Netflix < Theatres::Base
       extend Cashbox
@@ -33,6 +35,14 @@ module MovieTheater
         super(filename)
         @wallet = Money.new(0, 'USD')
         @client_filters = {}
+      end
+
+      def by_genre
+        MovieTheater::Theatres::Finders::GenreFinder.new(self)
+      end
+
+      def by_country
+        MovieTheater::Theatres::Finders::CountryFinder.new(self)
       end
 
       def check_money(amount)
