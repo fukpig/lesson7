@@ -15,34 +15,24 @@ module MovieTheater
         end
       end
 
+      class StringArray < Virtus::Attribute
+        def coerce(value)
+          value.split(',')
+        end
+      end
+
       include Virtus.model
 
       attribute :href, String
-      attribute :genre, Array[String]
+      attribute :genre, StringArray
       attribute :title, String
       attribute :release_year, Integer
       attribute :country, String
       attribute :release_date, Integer
-      attribute :full_duration_definition, String
-      attribute :duration, Integer, :default => lambda { |movie, _| movie.full_duration_definition.split(' ')[0] }
-      attribute :duration_definition, String, :default => lambda { |movie, _| movie.full_duration_definition.split(' ')[1] }
+      attribute :duration, String
       attribute :rating, Float
       attribute :director, String
-      attribute :actors, Array[String]
-
-      def genre=(value)
-        genres = value.split(',')
-        genres.map! { |g| g = g.downcase}
-        super genres
-      end
-
-      def country=(value)
-        super value.downcase
-      end
-
-      def actors=(value)
-        super value.split(',')
-      end
+      attribute :actors, StringArray
 
       def cost
         raise ConstantError, 'cost' unless defined? self.class::COST
@@ -55,7 +45,7 @@ module MovieTheater
       end
 
       def to_s
-        "#{@title} (#{@release_date}; #{@genre.join(',')}) - #{@duration} #{@duration_definition}  #{@country}"
+        "#{@title} (#{@release_year}; #{@genre.join(',')}) - #{@duration}  #{@country}"
       end
 
       def inspect
@@ -66,11 +56,15 @@ module MovieTheater
       def matches?(key, value)
         if key.to_s.include? "exclude"
           key = key.to_s.split("_")[1]
-          return Array(send(key)).any? { |v| value != v }
+          return Array(send(key)).any? { |v| value.downcase != v.downcase }
         end
 
         if value.kind_of?(Array)
-          return value.all? { |e|   send(key).include?(e) }
+          return value.all? { |e| send(key).map(&:downcase).include?(e) }
+        end
+
+        if value.kind_of?(String)
+          return Array(send(key)).any? { |v| value.downcase === v.downcase }
         end
 
         return Array(send(key)).any? { |v| value === v }

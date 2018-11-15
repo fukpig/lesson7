@@ -74,6 +74,7 @@ module MovieTheater
         @halls = []
         @periods = []
         @schedule = {}
+        #TheatreBuilder.new(self, &block) if block_given?
         instance_eval &block
         generate_schedule
       end

@@ -31,7 +31,7 @@ module MovieTheater
       attr_reader :collection
 
       MOVIE_HASH_KEYS =
-        %i[href title release_year country release_date genre full_duration_definition rating director actors].freeze
+        %i[href title release_year country release_date genre duration rating director actors].freeze
 
       def initialize(filename)
         raise FileNotFound.new, filename unless File.file? filename
