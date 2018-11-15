@@ -5,7 +5,7 @@ require_relative '../../../../lib/movie_theater/movies/modern.rb'
 
 describe MovieTheater::Movies::Modern do
   let(:arguments) { {:href => "http://url.com/", :title => "The Shining", :release_year => "1980", :country => "USA", :release_date => "1980-10-09", :genre => "Drama, Horror", :full_duration_definition => "103 min", :rating => 8.5, :director => "Stanley Kubrick", :actors => "Jack Nicholson, Ron Swanson"} }
-  let(:movie) { MovieTheater::Movies::Modern.new(arguments, nil) }
+  let(:movie) { MovieTheater::Movies::Modern.new(arguments) }
 
   describe 'valid modern movie' do
     subject { movie }

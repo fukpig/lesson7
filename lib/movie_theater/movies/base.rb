@@ -1,7 +1,11 @@
 # define base movie
+require 'virtus'
+require_relative '../theatres/base.rb'
+
 module MovieTheater
   module Movies
     class Base
+
       class ConstantError < StandardError
         attr_reader :constant_name
 
@@ -11,16 +15,24 @@ module MovieTheater
         end
       end
 
-      attr_reader :href, :title, :release_year, :country, :release_date,
-                  :genre, :full_duration_definition, :duration,
-                  :duration_definition, :rating, :director,
-                  :actors, :movie_collection
-
-      def initialize(args, movie_collection)
-        args.map { |k, v| instance_variable_set("@#{k}", v) unless v.nil? }
-        @movie_collection = movie_collection
-        normalize_attributes
+      class StringArray < Virtus::Attribute
+        def coerce(value)
+          value.split(',')
+        end
       end
+
+      include Virtus.model
+
+      attribute :href, String
+      attribute :genre, StringArray
+      attribute :title, String
+      attribute :release_year, Integer
+      attribute :country, String
+      attribute :release_date, Integer
+      attribute :duration, String
+      attribute :rating, Float
+      attribute :director, String
+      attribute :actors, StringArray
 
       def cost
         raise ConstantError, 'cost' unless defined? self.class::COST
@@ -33,7 +45,7 @@ module MovieTheater
       end
 
       def to_s
-        "#{@title} (#{@release_date}; #{@genre.join(',')}) - #{@duration} #{@duration_definition}  #{@country}"
+        "#{@title} (#{@release_year}; #{@genre.join(',')}) - #{@duration}  #{@country}"
       end
 
       def inspect
@@ -42,7 +54,20 @@ module MovieTheater
 
       # rubocop:disable CaseEquality
       def matches?(key, value)
-        Array(send(key)).any? { |v| value === v }
+        if key.to_s.include? "exclude"
+          key = key.to_s.split("_")[1]
+          return Array(send(key)).any? { |v| value.downcase != v.downcase }
+        end
+
+        if value.kind_of?(Array)
+          return value.all? { |e| send(key).map(&:downcase).include?(e) }
+        end
+
+        if value.kind_of?(String)
+          return Array(send(key)).any? { |v| value.downcase === v.downcase }
+        end
+
+        return Array(send(key)).any? { |v| value === v }
       end
       # rubocop:enable CaseEquality
 
@@ -50,16 +75,10 @@ module MovieTheater
         filter.any? { |k, v| matches?(k, v) }
       end
 
-      private
+      def method_missing(attribute_name)
 
-      def normalize_attributes
-        @release_year = @release_year.to_i
-        @genre = @genre.split(',')
-        @duration = @full_duration_definition.split(' ')[0].to_i
-        @duration_definition = @full_duration_definition.split(' ')[1]
-        @rating = @rating.to_f
-        @actors = @actors.split(',')
       end
+
     end
   end
 end
