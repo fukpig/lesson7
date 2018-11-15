@@ -2,8 +2,8 @@ require './lib/movie_theater.rb'
 
 I18n.config.available_locales = :en
 
-netflix = MovieTheater::Theatres::Netflix.new("movies.txt")
-netflix.pay(25)
+#netflix = MovieTheater::Theatres::Netflix.new("movies.txt")
+#netflix.pay(25)
 
 #puts netflix.by_genre.comedy
 #puts netflix.by_country.usa
@@ -20,6 +20,7 @@ theater =
       price 10
       hall :red, :blue
     end
+
 
     period '11:00'..'16:00' do
       description 'Спецпоказ'
